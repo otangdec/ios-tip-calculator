@@ -36,16 +36,19 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print("Output: \(servicePercentDict[serviceTypes[row]]!) selected")
-        //do logics to switch-case service type
+        
+        //save the index of the selected row
         currentTypeService = row
-        percentDisplay.text = String(format: "%.2f", servicePercentDict[serviceTypes[row]]! )
         
+        //set the current value of the stepper
+        percentStepper.value = servicePercentDict[serviceTypes[currentTypeService]]!
         
+        //format
+        percentDisplay.text = formatPercent(percentStepper.value)
     }
     
     @IBAction func onStepped(sender: AnyObject) {
-        percentDisplay.text = "\(percentStepper.value)"
+        percentDisplay.text = formatPercent(percentStepper.value)
         servicePercentDict[serviceTypes[currentTypeService]] = percentStepper.value
         updateSettingsLabels()
 
@@ -66,9 +69,16 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     }
     
     func updateSettingsLabels() {
-        goodLabel.text = String(format: "%.2f", servicePercentDict["Good"]!)
-        greatLabel.text = String(format: "%.2f", servicePercentDict["Great"]!)
-        excellentLabel.text = String(format: "%.2f", servicePercentDict["Excellent"]!)
+        goodLabel.text = formatPercent(servicePercentDict["Good"]!)
+        greatLabel.text = formatPercent(servicePercentDict["Great"]!)
+        excellentLabel.text = formatPercent(servicePercentDict["Excellent"]!)
+        
+    }
+    
+    func formatPercent(percent: Double) -> String {
+        let formatter = NSNumberFormatter()
+        formatter.numberStyle = NSNumberFormatterStyle.PercentStyle
+        return formatter.stringFromNumber(percent)!
     }
     
 
