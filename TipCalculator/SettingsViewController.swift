@@ -58,7 +58,7 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        //initialize the servicePercenDict if data is persisted
+        //initialize the servicePercenDict if data was persisted
         let defaults = NSUserDefaults.standardUserDefaults()
         if let savedDict = defaults.objectForKey("servicePercentDict") {
             servicePercentDict = savedDict as! [String : Double]
@@ -71,7 +71,7 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        //store the tip percentages to the NSUserDefaults
+        //persist the tip percentages to the NSUserDefaults
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setObject(servicePercentDict, forKey: "servicePercentDict")
         defaults.synchronize()

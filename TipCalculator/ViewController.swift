@@ -23,9 +23,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func onEditingChanged(sender: AnyObject) {
-        
         updateAmounts()
-        
     }
     
     @IBAction func onValueChanged(sender: AnyObject) {
@@ -34,6 +32,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //animate the segmented control
+        animateSegmentedControlLeftToMid()
         
         //set BillField to become the first responder
         billField.becomeFirstResponder()
@@ -45,19 +46,26 @@ class ViewController: UIViewController {
         //initialize the SegmentedControl if data is persisted
         let defaults = NSUserDefaults.standardUserDefaults()
         if let servicePercentDict = defaults.objectForKey("servicePercentDict") {
-            tipControl.setTitle(formatPercent(servicePercentDict["Good"] as! Double), forSegmentAtIndex: 0)
-            tipControl.setTitle(formatPercent(servicePercentDict["Great"] as! Double), forSegmentAtIndex: 1)
-            tipControl.setTitle(formatPercent(servicePercentDict["Excellent"] as! Double), forSegmentAtIndex: 2)
-            
-            tipPercentages[0] = servicePercentDict["Good"] as! Double
-            tipPercentages[1] = servicePercentDict["Great"] as! Double
-            tipPercentages[2] = servicePercentDict["Excellent"] as! Double
+            initializeSegmentedControl(servicePercentDict as! [String : Double])
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func initializeSegmentedControl(servicePercentDict: [String: Double]) {
+        tipControl.setTitle(formatPercent(servicePercentDict["Good"]!),
+            forSegmentAtIndex: 0)
+        tipControl.setTitle(formatPercent(servicePercentDict["Great"]!),
+            forSegmentAtIndex: 1)
+        tipControl.setTitle(formatPercent(servicePercentDict["Excellent"]!),
+            forSegmentAtIndex: 2)
+        
+        tipPercentages[0] = servicePercentDict["Good"]!
+        tipPercentages[1] = servicePercentDict["Great"]!
+        tipPercentages[2] = servicePercentDict["Excellent"]!
     }
     
     func formatCurrency(amount: Double) -> String {
@@ -80,7 +88,16 @@ class ViewController: UIViewController {
         tipLabel.text = formatCurrency(tip)
         totalLabel.text = formatCurrency(total)
     }
-
+    
+    func animateSegmentedControlLeftToMid() {
+        tipControl.alpha = 0
+        let tipControlXPosition = tipControl.frame.origin.x
+        tipControl.frame.origin.x = -100
+        UIView.animateWithDuration(1.5, animations: {
+            self.tipControl.alpha = 1
+            self.tipControl.frame.origin.x = tipControlXPosition
+        })
+    }
 
 }
 
