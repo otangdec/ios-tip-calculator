@@ -75,6 +75,7 @@
                                 </segments>
                                 <connections>
                                     <action selector="onEditingChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="ToK-S3-kxT"/>
+                                    <action selector="onValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="vdM-YZ-CN2"/>
                                 </connections>
                             </segmentedControl>
                             <view contentMode="scaleToFill" id="wze-1f-dhI">

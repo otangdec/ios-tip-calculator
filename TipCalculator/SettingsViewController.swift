@@ -10,8 +10,6 @@ import UIKit
 
 class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerViewDelegate {
 
-    
-
     @IBOutlet weak var percentStepper: UIStepper!
     @IBOutlet weak var goodLabel: UILabel!
     @IBOutlet weak var greatLabel: UILabel!
@@ -40,10 +38,7 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
         //save the index of the selected row
         currentTypeService = row
         
-        //set the current value of the stepper
         percentStepper.value = servicePercentDict[serviceTypes[currentTypeService]]!
-        
-        //format
         percentDisplay.text = formatPercent(percentStepper.value)
     }
     
@@ -51,16 +46,35 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
         percentDisplay.text = formatPercent(percentStepper.value)
         servicePercentDict[serviceTypes[currentTypeService]] = percentStepper.value
         updateSettingsLabels()
-
-        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         updateSettingsLabels()
-       
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        //initialize the servicePercenDict if data is persisted
+        let defaults = NSUserDefaults.standardUserDefaults()
+        if let savedDict = defaults.objectForKey("servicePercentDict") {
+            servicePercentDict = savedDict as! [String : Double]
+            updateSettingsLabels()
+            let stepValue = savedDict[serviceTypes[currentTypeService]] as! Double
+            percentStepper.value = stepValue
+            percentDisplay.text = formatPercent(stepValue)
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        //store the tip percentages to the NSUserDefaults
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setObject(servicePercentDict, forKey: "servicePercentDict")
+        defaults.synchronize()
     }
 
     override func didReceiveMemoryWarning() {
