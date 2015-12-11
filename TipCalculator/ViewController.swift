@@ -34,6 +34,9 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //set BillField to become the first responder
+        billField.becomeFirstResponder()
     }
     
     override func viewWillAppear(animated: Bool) {
