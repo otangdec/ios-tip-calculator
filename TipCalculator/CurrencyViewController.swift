@@ -38,9 +38,6 @@ class CurrencyViewController: UIViewController, UITableViewDataSource, UITableVi
         defaults.setObject(selectedCurrency, forKey: "selectedCurrency")
         defaults.synchronize()
     }
-    
-    
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +53,6 @@ class CurrencyViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             currencyPicker.selectRow(currentPosition, inComponent: 0, animated: true)
         }
-
-        
     }
 
     override func didReceiveMemoryWarning() {

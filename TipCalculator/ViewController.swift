@@ -16,6 +16,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var tipLabel: UILabel!
     @IBOutlet weak var totalLabel: UILabel!
     var tipPercentages = [0.18, 0.2, 0.22]
+    let defaultsServicePercentDict = ["Good":0.18, "Great":0.20, "Excellent":0.22]
+    let defaults = NSUserDefaults.standardUserDefaults()
+
     
     @IBAction func onTapped(sender: AnyObject) {
         //dismiss the keyboard
@@ -44,12 +47,20 @@ class ViewController: UIViewController {
         super.viewWillAppear(animated)
         
         //initialize the SegmentedControl if data is persisted
-        let defaults = NSUserDefaults.standardUserDefaults()
         if let servicePercentDict = defaults.objectForKey("servicePercentDict") {
             initializeSegmentedControl(servicePercentDict as! [String : Double])
+        } else {
+            initializeSegmentedControl(defaultsServicePercentDict)
         }
         
         updateAmounts()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        //save the bill amount value
+        defaults.setValue((billField.text! as NSString).doubleValue, forKey: "billAmount")
     }
     
     override func didReceiveMemoryWarning() {
@@ -70,12 +81,6 @@ class ViewController: UIViewController {
         tipPercentages[2] = servicePercentDict["Excellent"]!
     }
     
-//    func formatCurrency(amount: Double) -> String {
-//        let formatter = NSNumberFormatter()
-//        formatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
-//        return formatter.stringFromNumber(amount)!
-//    }
-    
     func formatPercent(percent: Double) -> String {
         let formatter = NSNumberFormatter()
         formatter.numberStyle = NSNumberFormatterStyle.PercentStyle
@@ -85,20 +90,20 @@ class ViewController: UIViewController {
     func updateAmounts() {
         let tipPercentage = tipPercentages[tipControl.selectedSegmentIndex]
         let billAmount = (billField.text! as NSString).doubleValue
+//        if let savedBillAmount = defaults.valueForKey("billAmount") {
+//            billAmount = Double(savedBillAmount as! NSNumber)
+//        }
+        
         let tip = billAmount * tipPercentage
         let total = billAmount + tip
         
-        
         if let selectedCurrency = NSUserDefaults.standardUserDefaults().objectForKey("selectedCurrency") {
-            
-            
             tipLabel.text = formatCurrencyByType(selectedCurrency as! String, amount: tip)
             totalLabel.text = formatCurrencyByType(selectedCurrency as! String, amount: total)
         } else {
             tipLabel.text = formatCurrencyByType(amount: tip)
             totalLabel.text = formatCurrencyByType(amount: total)
         }
-        
     }
     
     func formatCurrencyByType(currencyType: String = "USD", amount: Double) -> String {

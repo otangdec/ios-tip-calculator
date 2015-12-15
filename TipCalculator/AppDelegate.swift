@@ -16,7 +16,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        //set tip percentages first time
+        NSUserDefaults.standardUserDefaults().setObject(["Good":0.18, "Great":0.20, "Excellent":0.22], forKey: "servicePercentDict")
+        
+        //set the default currency
+        NSUserDefaults.standardUserDefaults().setValue("USD", forKey: "selectedCurrency")
+        
+        //clear bill amount across applicaiton
+        let nowDate = NSDate().dateByAddingTimeInterval(10*60)
+        let timer = NSTimer(fireDate: nowDate, interval: 0, target: self, selector: "resetBillAmount", userInfo: nil, repeats: false)
+        NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
         return true
+    }
+    
+    func resetBillAmount() {
+        if var billAmount = NSUserDefaults.standardUserDefaults().valueForKey("billAmount") {
+            billAmount = 0.0
+            NSUserDefaults.standardUserDefaults().setValue(billAmount, forKey: "billAmount")
+        }
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {
