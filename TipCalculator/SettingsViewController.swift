@@ -21,6 +21,7 @@ class SettingsViewController: UIViewController,UIPickerViewDataSource, UIPickerV
     var servicePercentDict = ["Good": 0.15, "Great": 0.18, "Excellent": 0.25]
     var currentTypeService = 0
     
+    
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }

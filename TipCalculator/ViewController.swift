@@ -48,6 +48,8 @@ class ViewController: UIViewController {
         if let servicePercentDict = defaults.objectForKey("servicePercentDict") {
             initializeSegmentedControl(servicePercentDict as! [String : Double])
         }
+        
+        updateAmounts()
     }
     
     override func didReceiveMemoryWarning() {
@@ -68,11 +70,11 @@ class ViewController: UIViewController {
         tipPercentages[2] = servicePercentDict["Excellent"]!
     }
     
-    func formatCurrency(amount: Double) -> String {
-        let formatter = NSNumberFormatter()
-        formatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
-        return formatter.stringFromNumber(amount)!
-    }
+//    func formatCurrency(amount: Double) -> String {
+//        let formatter = NSNumberFormatter()
+//        formatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+//        return formatter.stringFromNumber(amount)!
+//    }
     
     func formatPercent(percent: Double) -> String {
         let formatter = NSNumberFormatter()
@@ -85,8 +87,26 @@ class ViewController: UIViewController {
         let billAmount = (billField.text! as NSString).doubleValue
         let tip = billAmount * tipPercentage
         let total = billAmount + tip
-        tipLabel.text = formatCurrency(tip)
-        totalLabel.text = formatCurrency(total)
+        
+        
+        if let selectedCurrency = NSUserDefaults.standardUserDefaults().objectForKey("selectedCurrency") {
+            
+            
+            tipLabel.text = formatCurrencyByType(selectedCurrency as! String, amount: tip)
+            totalLabel.text = formatCurrencyByType(selectedCurrency as! String, amount: total)
+        } else {
+            tipLabel.text = formatCurrencyByType(amount: tip)
+            totalLabel.text = formatCurrencyByType(amount: total)
+        }
+        
+    }
+    
+    func formatCurrencyByType(currencyType: String = "USD", amount: Double) -> String {
+        //format using the selected currency
+        let formatter = NSNumberFormatter()
+        formatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+        formatter.currencyCode = currencyType
+        return formatter.stringFromNumber(amount)!
     }
     
     func animateSegmentedControlLeftToMid() {
